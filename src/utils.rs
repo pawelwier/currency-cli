@@ -11,3 +11,12 @@ pub async fn process_api_result(result: Result<Response, Error>) -> Map<String, 
 pub fn clear_terminal() -> () {
     print!("{}[2J", 27 as char);
 }
+
+pub fn get_command_list() -> String {
+    "Available commands:\n
+    list - show the list of all commands,\n
+    rate - get exchange rate(s) for selected currency (follow further steps),\n
+    all  - get the list of all exchange rates for PLN,\n
+    info - show all available currencies,\n
+    exit - quit the app,\n".to_string()
+}

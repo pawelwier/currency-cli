@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::utils::get_command_list;
+
 #[derive(Debug)]
 pub enum Command {
     CommandList(String),
@@ -36,8 +38,8 @@ pub fn get_rate_mode(source_currency: &str, target_currency: &str) -> RateMode {
 
 pub fn parse_command_main(text: &str) -> (String, Mode) {
     let command_map: HashMap<String, Command> = HashMap::from([
-        ("list".to_string(), Command::CommandList("Available commands:\nlist - show all commands".to_string())),
-        ("get".to_string(), Command::Rates("Insert source currency code (eg. 'USD')".to_string())),
+        ("list".to_string(), Command::CommandList(get_command_list())),
+        ("rate".to_string(), Command::Rates("Insert source currency code (eg. 'USD')".to_string())),
         ("all".to_string(), Command::AllRates("All exchange rates:".to_string())),
         ("info".to_string(), Command::CurrencyList("All available currencies:".to_string())),
         ("exit".to_string(), Command::Exit("Bye bye!".to_string()))
