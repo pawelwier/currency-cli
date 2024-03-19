@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use crate::api::{get_all_exchange_rates, get_all_currencies};
 use crate::utils::get_command_list;
 
 #[derive(Debug)]
@@ -25,7 +26,10 @@ pub enum RateMode {
     Amount
 }
 
-pub fn get_rate_mode(source_currency: &str, target_currency: &str) -> RateMode {
+pub fn get_rate_mode(
+    source_currency: &str, 
+    target_currency: &str
+) -> RateMode {
     let provided_values: (bool, bool) = (!source_currency.is_empty(), !target_currency.is_empty());
 
     match provided_values {
@@ -36,12 +40,12 @@ pub fn get_rate_mode(source_currency: &str, target_currency: &str) -> RateMode {
     }
 }
 
-pub fn parse_command_main(text: &str) -> (String, Mode) {
+pub async fn parse_command_main(text: &str) -> (String, Mode) {
     let command_map: HashMap<String, Command> = HashMap::from([
         ("list".to_string(), Command::CommandList(get_command_list())),
         ("rate".to_string(), Command::Rates("Insert source currency code (eg. 'USD')".to_string())),
-        ("all".to_string(), Command::AllRates("All exchange rates:".to_string())),
-        ("info".to_string(), Command::CurrencyList("All available currencies:".to_string())),
+        ("all".to_string(), Command::AllRates(get_all_exchange_rates().await)),
+        ("info".to_string(), Command::CurrencyList(get_all_currencies().await)),
         ("exit".to_string(), Command::Exit("Bye bye!".to_string()))
     ]);
 

@@ -17,7 +17,7 @@ async fn main() {
         let input: String = get_input();
         clear_terminal();
 
-        let (msg, mode) = parse_command_main(&input);
+        let (msg, mode) = parse_command_main(&input).await;
         println!("\n{}\n", msg);
         
         match mode {

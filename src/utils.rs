@@ -16,7 +16,7 @@ pub fn get_command_list() -> String {
     "Available commands:\n
     list - show the list of all commands,\n
     rate - get exchange rate(s) for selected currency (follow further steps),\n
-    all  - get the list of all exchange rates for PLN,\n
+    all  - get the list of all exchange rates for your local currency,\n
     info - show all available currencies,\n
     exit - quit the app,\n".to_string()
 }
