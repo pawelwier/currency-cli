@@ -6,13 +6,14 @@ mod api;
 mod cli;
 mod input_output;
 mod utils;
+mod tests;
 
 #[tokio::main]
 async fn main() {
     clear_terminal();
     println!("Hi! Welcome to the currency exchange system. Type in 'list' to see all available actions.\n");
     loop {
-        println!("Please insert your action.\n");
+        println!("Please type in your action.\n");
 
         let input: String = get_input();
         clear_terminal();
@@ -49,10 +50,10 @@ async fn main() {
                         },
                         RateMode::Amount => {
                             clear_terminal();
-                             match handle_amount(&input, &source_currency, &target_currency).await {
+                            match handle_amount(&input, &source_currency, &target_currency).await {
                                 Ok(_) => { break; },
                                 Err(_) => ()
-                             }
+                            }
                         }
                     }
                 }

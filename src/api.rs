@@ -5,7 +5,7 @@ use serde_json::{Map, Value};
 
 use crate::utils::process_api_result;
 
-async fn fetch_data(
+pub async fn fetch_data(
     url: &str,
     params: &[(&str, String)]
 ) -> Result<Response, Error> {

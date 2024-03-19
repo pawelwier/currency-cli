@@ -17,7 +17,7 @@ pub async fn handle_source_currency(input: &str) -> bool {
     let result = is_currency(&input).await;
     match result {
         true => {
-            println!("Insert target currency code(s) (eg. 'USD' or 'DKK,SEK')\n");
+            println!("Type in the target currency code(s) (eg. 'USD' or 'DKK,SEK')\n");
         }
         false => { 
             println!("Invalid currency code\n");
