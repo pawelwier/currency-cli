@@ -1,16 +1,15 @@
 use std::str::Split;
 use reqwest::{Response, Error};
-use dotenv;
 use serde_json::{Map, Value};
 
-use crate::utils::process_api_result;
+use crate::utils::{get_env_value, process_api_result};
 
 pub async fn fetch_data(
     url: &str,
     params: &[(&str, String)]
 ) -> Result<Response, Error> {
-    let base_url: String = dotenv::var("API_URL").unwrap();
-    let api_key: String = dotenv::var("API_KEY").unwrap();
+    let base_url: String = get_env_value("API_URL");
+    let api_key: String = get_env_value("API_KEY");
     
     let key_params: &[(&str, String)] = &[("apikey", api_key)];
     let params_final: Vec<(&str, String)> = [params, key_params].concat();
@@ -58,8 +57,7 @@ pub async fn is_currency_list(text: &str) -> bool {
 }
 
 pub async fn get_all_exchange_rates() -> String {
-    let local_currency: String = dotenv::var("LOCAL_CURRENCY").unwrap();
-    
+    let local_currency: String = get_env_value("LOCAL_CURRENCY");
     let currencies_result: Result<Response, Error> = fetch_currencies().await;
     let currencies_data: &Map<String, Value> = &process_api_result(currencies_result).await;
     let keys: Vec<String> = currencies_data.keys().into_iter().map(|key| key.to_string()).collect();
@@ -80,7 +78,7 @@ pub async fn get_all_currencies() -> String {
     let currencies_data: &Map<String, Value> = &process_api_result(currencies_result).await;
     let keys: Vec<String> = currencies_data.keys().into_iter().map(|key| key.to_string()).collect();
     
-    let mut currencies: String = "All available currencies:\n\n".to_string();
+    let mut currencies: String = "".to_string();
 
     for key in keys {
         let currency = currencies_data.get(&key).unwrap();

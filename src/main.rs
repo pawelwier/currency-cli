@@ -1,6 +1,9 @@
+use api::{get_all_exchange_rates, get_all_currencies};
 use cli::{parse_command_main, get_rate_mode, Mode, RateMode};
-use input_output::{get_input, handle_source_currency, handle_target_currency, handle_amount};
-use utils::clear_terminal;
+use input_output::{
+    get_input, handle_source_currency, handle_target_currency, handle_amount
+};
+use utils::{clear_terminal, print_text};
 
 mod api;
 mod cli;
@@ -18,13 +21,21 @@ async fn main() {
         let input: String = get_input();
         clear_terminal();
 
-        let (msg, mode) = parse_command_main(&input).await;
-        println!("\n{}\n", msg);
+        let (msg, mode) = parse_command_main(&input);
+        print_text(&msg);
         
         match mode {
             Mode::Default => continue,
             Mode::Exit => break,
-            Mode::GetSingle => {
+            Mode::AllRates => {
+                print_text(&get_all_exchange_rates().await);
+                continue;
+            }
+            Mode::Currencies => {
+                print_text(&get_all_currencies().await);
+                continue;
+            }
+            Mode::Rates => {
                 let mut source_currency: String = String::new();
                 let mut target_currency: String = String::new();
                 

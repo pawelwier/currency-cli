@@ -4,7 +4,9 @@ mod tests{
     use reqwest::{Error, Response};
 
     use crate::api::fetch_data;    
-    use crate::cli::{get_mode, get_rate_mode, parse_command_main, Command, Mode, RateMode};
+    use crate::cli::{
+        get_invalid_msg, get_mode, get_rate_mode, parse_command_main, Command, Mode, RateMode
+    };
     use crate::utils::get_command_list;
 
     /* api */
@@ -35,7 +37,7 @@ mod tests{
 
     /* cli */
     #[test]
-    fn test_cli() {
+    fn test_get_rate_mode() {
         assert_eq!(get_rate_mode("NOK", ""), RateMode::Target);
         assert_eq!(get_rate_mode("DKK", "NOK,EUR"), RateMode::Amount);
     }
@@ -48,15 +50,23 @@ mod tests{
         );
         assert_eq!(
             get_mode(Some(&Command::Rates("Please write your selected currency.".to_string())), &"All wrong!".to_string()), 
-            ("Please write your selected currency.".to_string(), Mode::GetSingle)
+            ("Please write your selected currency.".to_string(), Mode::Rates)
         );
     }
 
-    #[tokio::test]
-    async fn test_parse_command_main() {
+    #[test]
+    fn test_parse_command_main() {
         assert_eq!(
-            parse_command_main("list").await,
+            parse_command_main("list"),
             (get_command_list(), Mode::Default)
         );
+    }
+
+    #[test]
+    fn test_invalid_msg() {
+        assert_eq!(
+            get_invalid_msg("I don't belong here"),
+            format!("Invalid command: {}Type in 'list' to view available commands.", "I don't belong here")
+        )
     }
 }

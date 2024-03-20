@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-use crate::api::{get_all_exchange_rates, get_all_currencies};
 use crate::utils::get_command_list;
 
 #[derive(Debug)]
@@ -14,8 +13,10 @@ pub enum Command {
 
 #[derive(PartialEq, Debug)]
 pub enum Mode {
+    Rates,
+    AllRates,
+    Currencies,
     Default,
-    GetSingle,
     Exit
 }
 
@@ -44,9 +45,9 @@ pub fn get_mode(command_value: Option<&Command>, invalid_msg: &String) -> (Strin
     let message: &String = &invalid_msg.to_string();
     let (msg, mode) = match command_value {
         Some(Command::CommandList(value)) => (value, Mode::Default),
-        Some(Command::Rates(value)) => (value, Mode::GetSingle),
-        Some(Command::AllRates(value)) => (value, Mode::Default),
-        Some(Command::CurrencyList(value)) => (value, Mode::Default),
+        Some(Command::Rates(value)) => (value, Mode::Rates),
+        Some(Command::AllRates(value)) => (value, Mode::AllRates),
+        Some(Command::CurrencyList(value)) => (value, Mode::Currencies),
         Some(Command::Exit(value)) => (value, Mode::Exit),
         None => (message, Mode::Default)
     };
@@ -54,17 +55,20 @@ pub fn get_mode(command_value: Option<&Command>, invalid_msg: &String) -> (Strin
     (msg.to_string(), mode)
 }
 
-pub async fn parse_command_main(text: &str) -> (String, Mode) {
+pub fn get_invalid_msg(text: &str) -> String {
+    format!("Invalid command: {}Type in 'list' to view available commands.", text)
+} 
+
+pub fn parse_command_main(text: &str) -> (String, Mode) {
     let command_map: HashMap<String, Command> = HashMap::from([
         ("list".to_string(), Command::CommandList(get_command_list())),
         ("rate".to_string(), Command::Rates("Type in the source currency code (eg. 'USD')".to_string())),
-        ("all".to_string(), Command::AllRates(get_all_exchange_rates().await)),
-        ("info".to_string(), Command::CurrencyList(get_all_currencies().await)),
+        ("all".to_string(), Command::AllRates("".to_string())),
+        ("info".to_string(), Command::CurrencyList("All available currencies:".to_string())),
         ("exit".to_string(), Command::Exit("Bye bye!".to_string()))
     ]);
 
     let command_value: Option<&Command> = command_map.get(text.trim());
-    let invalid_msg: &String = &format!("Invalid command: {}Type in 'list' to view available commands.", text);
 
-    get_mode(command_value, invalid_msg)
+    get_mode(command_value, &get_invalid_msg(text))
 }
