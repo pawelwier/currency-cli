@@ -64,7 +64,7 @@ pub async fn get_all_exchange_rates() -> String {
     let keys_joined: String = keys.join(",");
     let result: Result<Response, Error> = fetch_currency_rates(&local_currency, &keys_joined).await;
     let data: &Map<String, Value> = &process_api_result(result).await;
-
+    
     let mut rates: String = format!("\n1 {}\n-----\n", local_currency).to_string();
     for key in keys {
         rates += &format!("{:6}: {:?}\n", key, data.get(&key).unwrap().to_string().parse::<f32>().unwrap());

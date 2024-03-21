@@ -1,6 +1,7 @@
 #[cfg(test)]
 
 mod tests{
+    use dotenv;
     use reqwest::{Error, Response};
 
     use crate::api::fetch_data;    
@@ -68,5 +69,18 @@ mod tests{
             get_invalid_msg("I don't belong here"),
             format!("Invalid command: {}Type in 'list' to view available commands.", "I don't belong here")
         )
+    }
+
+    #[test]
+    fn test_update_local_currency() {
+        std::env::set_var("LOCAL_CURRENCY", "EUR");
+        let currency = dotenv::var("LOCAL_CURRENCY").unwrap();
+
+        assert_eq!(currency, "EUR");
+
+        std::env::set_var("LOCAL_CURRENCY", "DKK");
+        let currency = dotenv::var("LOCAL_CURRENCY").unwrap();
+
+        assert_eq!(currency, "DKK");
     }
 }

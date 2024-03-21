@@ -4,7 +4,7 @@ use reqwest::{Response, Error};
 use serde_json::{Map, Value};
 
 use crate::api::{fetch_currency_rates, is_currency, is_currency_list};
-use crate::utils::process_api_result;
+use crate::utils::{print_text, process_api_result};
 
 pub fn get_input() -> String {
     let mut input = String::new();
@@ -17,10 +17,10 @@ pub async fn handle_source_currency(input: &str) -> bool {
     let result = is_currency(&input).await;
     match result {
         true => {
-            println!("Type in the target currency code(s) (eg. 'USD' or 'DKK,SEK')\n");
+            print_text("Type in the target currency code(s) (eg. 'USD' or 'DKK,SEK')");
         }
         false => { 
-            println!("Invalid currency code\n");
+            print_text("Invalid currency code");
         }
     }
 
@@ -31,10 +31,10 @@ pub async fn handle_target_currency(input: &str) -> bool {
     let result = is_currency_list(&input).await;
     match result {
         true => {
-            println!("Provide amount\n");
+            print_text("Provide amount");
         }
         false => { 
-            println!("Invalid currency code(s)\n");
+            print_text("Invalid currency code(s)");
         }
     }
 
@@ -61,9 +61,23 @@ pub async fn handle_amount(
             println!("{}", rates);
         },
         Err(_) => {
-            println!("Invalid amount\n");
+            print_text("Invalid amount");
         }
     }
 
     amount_result
+}
+
+pub async fn update_local_currency(code: &str) -> Result<bool, std::io::Error> {
+    let result = is_currency(&code).await;
+    match result {
+        true => {
+            std::env::set_var("LOCAL_CURRENCY", code);
+        }
+        false => { 
+            print_text("Invalid currency code");
+        }
+    }
+
+    Ok(result)
 }

@@ -26,11 +26,12 @@ pub fn clear_terminal() -> () {
 
 pub fn get_command_list() -> String {
     "Available commands:\n
-    list - show the list of all commands,\n
-    rate - get exchange rate(s) for selected currency (follow further steps),\n
-    all  - get the list of all exchange rates for your local currency,\n
-    info - show all available currencies,\n
-    exit - quit the app.\n".to_string()
+    list   - show the list of all commands,\n
+    rate   - get exchange rate(s) for selected currency (follow further steps),\n
+    all    - get the list of all exchange rates for your local currency,\n
+    info   - show all available currencies,\n
+    local  - update your local currency (follow further steps),\n
+    exit   - quit the app.\n".to_string()
 }
 
 pub fn get_env_value(key: &str) -> String {

@@ -1,7 +1,7 @@
 use api::{get_all_exchange_rates, get_all_currencies};
 use cli::{parse_command_main, get_rate_mode, Mode, RateMode};
 use input_output::{
-    get_input, handle_source_currency, handle_target_currency, handle_amount
+    get_input, handle_source_currency, handle_target_currency, handle_amount, update_local_currency
 };
 use utils::{clear_terminal, print_text};
 
@@ -14,9 +14,9 @@ mod tests;
 #[tokio::main]
 async fn main() {
     clear_terminal();
-    println!("Hi! Welcome to the currency exchange system. Type in 'list' to see all available actions.\n");
+    print_text("Hi! Welcome to the currency exchange system. Type in 'list' to see all available actions.");
     loop {
-        println!("Please type in your action.\n");
+        print_text("Please type in your action.");
 
         let input: String = get_input();
         clear_terminal();
@@ -35,24 +35,41 @@ async fn main() {
                 print_text(&get_all_currencies().await);
                 continue;
             }
+            Mode::Local => {
+                loop {
+                    let input: String = get_input();
+                    match update_local_currency(&input).await {
+                        Ok(value) => { 
+                            match value {
+                                true => {
+                                    clear_terminal();
+                                    print_text(&format!("Local currency updated to {}", input));
+                                    break;
+                                }
+                                false => {
+                                    continue;
+                                }
+                            }
+                        },
+                        Err(_) => ()
+                    }
+                }
+            }
             Mode::Rates => {
                 let mut source_currency: String = String::new();
                 let mut target_currency: String = String::new();
                 
-                clear_terminal();
                 loop {
                     let input: String = get_input();
                     let rate_mode = get_rate_mode(&source_currency, &target_currency);
                     match rate_mode {
                         RateMode::Source => {
-                            clear_terminal();
                             if handle_source_currency(&input).await {
                                 source_currency = input;
                                 continue;
                             }
                         },
                         RateMode::Target => {
-                            clear_terminal();
                             if handle_target_currency(&input).await {
                                 target_currency = input;
                                 println!("Input: {}Output: {}", source_currency, target_currency);

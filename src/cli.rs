@@ -8,6 +8,7 @@ pub enum Command {
     Rates(String),
     AllRates(String),
     CurrencyList(String),
+    LocalCurrency(String),
     Exit(String)
 }
 
@@ -17,6 +18,7 @@ pub enum Mode {
     AllRates,
     Currencies,
     Default,
+    Local,
     Exit
 }
 
@@ -48,6 +50,7 @@ pub fn get_mode(command_value: Option<&Command>, invalid_msg: &String) -> (Strin
         Some(Command::Rates(value)) => (value, Mode::Rates),
         Some(Command::AllRates(value)) => (value, Mode::AllRates),
         Some(Command::CurrencyList(value)) => (value, Mode::Currencies),
+        Some(Command::LocalCurrency(value)) => (value, Mode::Local),
         Some(Command::Exit(value)) => (value, Mode::Exit),
         None => (message, Mode::Default)
     };
@@ -65,6 +68,7 @@ pub fn parse_command_main(text: &str) -> (String, Mode) {
         ("rate".to_string(), Command::Rates("Type in the source currency code (eg. 'USD')".to_string())),
         ("all".to_string(), Command::AllRates("".to_string())),
         ("info".to_string(), Command::CurrencyList("All available currencies:".to_string())),
+        ("local".to_string(), Command::LocalCurrency("Insert new local currency code:".to_string())),
         ("exit".to_string(), Command::Exit("Bye bye!".to_string()))
     ]);
 
